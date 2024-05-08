@@ -67,8 +67,17 @@ export const ImageWidget = ({
   captionbold,
   captionhorizontalalignment,
 }: ImageWidgetProps): ReactElement => {
+  const getPosition = (string: string, subString: string, index: number) => {
+    return string.split(subString, index).join(subString).length;
+  };
   useEffect(() => {
     if (image) {
+      const bas64Index = image.indexOf("base64");
+      const imageBase64 = image.substring(bas64Index + 7);
+      const nameEndIndex = getPosition(image, ";", 2);
+      const nameIndex = image.indexOf("name");
+      const imageName = image.substring(nameIndex + 5, nameEndIndex);
+
       fetch("https://touchbase.lsg-group.com/api/media", {
         method: "post",
         headers: {
@@ -76,9 +85,9 @@ export const ImageWidget = ({
           "Content-Type": "application/json",
         },
 
-        //make sure to serialize your JSON body
         body: JSON.stringify({
-          file: image,
+          metadata: { type: "image", fileName: imageName },
+          file: imageBase64,
         }),
       }).then((response) => {
         console.log("response", response);
@@ -86,7 +95,7 @@ export const ImageWidget = ({
       });
     }
   }, [image]);
-  console.log(image);
+
   const imageStyles = {
     width: imagewidth == 0 ? "auto" : `${imagewidth}vw`,
     height: imageheight == 0 ? "auto" : `${imageheight}vh`,
