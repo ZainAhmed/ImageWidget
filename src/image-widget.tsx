@@ -72,11 +72,12 @@ export const ImageWidget = ({
   };
   useEffect(() => {
     if (image) {
-      const bas64Index = image.indexOf("base64");
-      const imageBase64 = image.substring(bas64Index + 7);
       const nameEndIndex = getPosition(image, ";", 2);
       const nameIndex = image.indexOf("name");
       const imageName = image.substring(nameIndex + 5, nameEndIndex);
+      const bas64Index = image.indexOf("base64");
+      const imageBase64 = image.substring(bas64Index + 7);
+      const binaryString = atob(imageBase64);
 
       fetch("https://touchbase.lsg-group.com/api/media", {
         method: "post",
@@ -87,7 +88,7 @@ export const ImageWidget = ({
 
         body: JSON.stringify({
           metadata: { type: "image", fileName: imageName },
-          file: imageBase64,
+          file: binaryString,
         }),
       }).then((response) => {
         console.log("response", response);
