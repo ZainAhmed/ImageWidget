@@ -69,7 +69,7 @@ export const ImageWidget = ({
 }: ImageWidgetProps): ReactElement => {
   useEffect(() => {
     if (image) {
-      fetch("https://touchbase.lsg-group.com/media", {
+      fetch("https://touchbase.lsg-group.com/api/media", {
         method: "post",
         headers: {
           Accept: "application/json",
@@ -81,12 +81,12 @@ export const ImageWidget = ({
           file: image,
         }),
       }).then((response) => {
-        console.log(response);
+        console.log("response", response);
         //do something awesome that makes the world a better place
       });
     }
   }, [image]);
-
+  console.log(image);
   const imageStyles = {
     width: imagewidth == 0 ? "auto" : `${imagewidth}vw`,
     height: imageheight == 0 ? "auto" : `${imageheight}vh`,
