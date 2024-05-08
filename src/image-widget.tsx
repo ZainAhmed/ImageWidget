@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { BlockAttributes } from "widget-sdk";
 
 /**
@@ -67,6 +67,25 @@ export const ImageWidget = ({
   captionbold,
   captionhorizontalalignment,
 }: ImageWidgetProps): ReactElement => {
+  useEffect(() => {
+    if (image) {
+      fetch("https://touchbase.lsg-group.com/media", {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+
+        //make sure to serialize your JSON body
+        body: JSON.stringify({
+          file: image,
+        }),
+      }).then((response) => {
+        console.log(response);
+        //do something awesome that makes the world a better place
+      });
+    }
+  }, [image]);
 
   const imageStyles = {
     width: imagewidth == 0 ? "auto" : `${imagewidth}vw`,
