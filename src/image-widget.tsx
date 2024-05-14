@@ -82,8 +82,7 @@ export const ImageWidget = ({
       fetch("https://touchbase.lsg-group.com/api/media", {
         method: "post",
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
 
         body: JSON.stringify({
