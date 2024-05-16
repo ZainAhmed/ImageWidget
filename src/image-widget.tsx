@@ -13,10 +13,13 @@
 
 import React, { ReactElement, useEffect } from "react";
 import { BlockAttributes } from "widget-sdk";
-
+import { Buffer } from "buffer";
 /**
  * React Component
  */
+
+const authToken =
+  "Basic NjYzYmE3NTUzZjkyNWIyODc3OTI4YTYyOkxkKDF1WUVFbmt+cG51fWJheWxlZFVwO1BXOXBheFt3K2RwO0N2a2RyREs1aihlKl1idEZ6V2tQUEpZTixYRSs=";
 export interface ImageWidgetProps extends BlockAttributes {
   image: string;
   imageheight: number;
@@ -78,17 +81,22 @@ export const ImageWidget = ({
       const bas64Index = image.indexOf("base64");
       const imageBase64 = image.substring(bas64Index + 7);
       const binaryString = atob(imageBase64);
-
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: "application/octet-stream" });
+      const formData = new FormData();
+      formData.append("file", blob, imageName);
+      formData.append("type", "image");
       fetch("https://touchbase.lsg-group.com/api/media", {
         method: "post",
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: authToken,
+          // "Content-Type": "multipart/form-data",
         },
 
-        body: JSON.stringify({
-          metadata: { type: "image", fileName: imageName },
-          file: binaryString,
-        }),
+        body: formData,
       }).then((response) => {
         console.log("response", response);
         //do something awesome that makes the world a better place
