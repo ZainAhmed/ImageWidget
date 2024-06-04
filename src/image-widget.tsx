@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { BlockAttributes } from "widget-sdk";
 import { Buffer } from "buffer";
 /**
@@ -70,6 +70,7 @@ export const ImageWidget = ({
   captionbold,
   captionhorizontalalignment,
 }: ImageWidgetProps): ReactElement => {
+  const [imgUrl, setImgUrl] = useState();
   const getPosition = (string: string, subString: string, index: number) => {
     return string.split(subString, index).join(subString).length;
   };
@@ -98,7 +99,10 @@ export const ImageWidget = ({
 
         body: formData,
       }).then((response) => {
-        console.log("response", response);
+        const result = response.json();
+        result.then((data) => {
+          setImgUrl(data.resourceInfo.url);
+        });
         //do something awesome that makes the world a better place
       });
     }
@@ -133,7 +137,7 @@ export const ImageWidget = ({
   return (
     <div style={containerStyles}>
       <div style={containerChild}>
-        <img src={image} style={imageStyles} />
+        {imgUrl ? <img src={imgUrl} style={imageStyles} /> : null}
         {captiontext && <p style={captionStyles}>{captiontext}</p>}
       </div>
     </div>
